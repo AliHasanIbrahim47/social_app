@@ -6,7 +6,7 @@ import Card from "@/features/shared/components/ui/Card";
 import { CommentForList } from "../types";
 import { CommentEditForm } from "./CommentEditForm";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/features/shared/components/ui/Dialog";
-import { trpc } from "@/trpc";
+import { trpc } from "@/router";
 import { useToast } from "@/features/shared/hooks/useToast";
 
 type CommentCardProps = {
