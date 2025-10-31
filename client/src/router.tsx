@@ -4,8 +4,10 @@ import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import {
   createTRPCQueryUtils,
   createTRPCReact,
+  getQueryKey,
   httpBatchLink,
   TRPCClientError,
+  TRPCLink,
 } from "@trpc/react-query";
 
 import Spinner from "./features/shared/components/ui/Spinner";
@@ -13,15 +15,60 @@ import { env } from "./lib/utils/env";
 import { routeTree } from "./routeTree.gen";
 import { ErrorComponent } from "./features/shared/components/ErrorComponent";
 import { NotFoundComponent } from "./features/shared/components/NotFoundComponent";
+import { observable } from "@trpc/server/observable";
 
 export const queryClient = new QueryClient();
 
 export const trpc = createTRPCReact<AppRouter>();
 
+const customLink: TRPCLink<AppRouter> = () => {
+  return ({ next, op }) => {
+    return observable((observer) => {
+      const unsubscribe = next(op).subscribe({
+        next(value) {
+          observer.next(value);
+        },
+
+        error(err) {
+          if (err?.data?.code === "UNAUTHORIZED") {
+            router.navigate({ to: "/login" });
+          }
+
+          observer.error(err);
+        },
+
+        complete() {
+          observer.complete();
+        },
+      });
+
+      return unsubscribe;
+    });
+  };
+};
+
+function getHeaders() {
+  const queryKey = getQueryKey(trpc.auth.currentUser);
+  const token = queryClient.getQueryData<{ accessToken: string }>(
+    queryKey,
+  )?.accessToken;
+
+  return {
+    Authorization: token ? `Bearer ${token}` : undefined,
+  };
+}
+
 export const trpcClient = trpc.createClient({
   links: [
-    httpBatchLink({
+    customLink,
+      httpBatchLink({
       url: env.VITE_SERVER_BASE_URL,
+      fetch(url, options) {
+        // ensure options conforms to RequestInit so fetch overloads match
+        const init: RequestInit = { ...(options as RequestInit), credentials: "include" };
+        return fetch(url, init);
+      },
+      headers: getHeaders(),
     }),
   ],
 });
