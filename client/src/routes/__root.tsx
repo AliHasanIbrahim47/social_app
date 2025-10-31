@@ -21,14 +21,9 @@ function Root() {
         <Navbar />
         <div className="min-h-screen w-full max-w-2xl">
           <header className="mb-4 border-b border-neutral-200 p-4 dark:border-neutral-800">
-            <h1 className="text-center text-xl font-bold">
-              Advanced Patterns React
+            <h1 className="text-center text-xl text-neutral-500">
+              <span className="dark:text-primary-500">Ali Ibrahim</span>
             </h1>
-            <p className="text-center text-sm text-neutral-500">
-              <b>
-                <span className="dark:text-primary-500">Ali Ibrahim</span>
-              </b>
-            </p>
           </header>
           <Outlet />
         </div>
