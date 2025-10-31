@@ -8,8 +8,10 @@ export const userCredentialsSchema = z.object({
 });
 
 export const userEditSchema = zfd.formData({
-  id: zfd.numeric(z.number()),
-  name: zfd.text(z.string().min(3, "Name must be at least 3 characters long")),
+  id: zfd.numeric(),
+  name: zfd.text().refine(val => val.length >= 3, {
+    message: "Name must be at least 3 characters long",
+  }),
   bio: zfd.text().optional(),
   photo: zfd.file().optional(),
 });
