@@ -26,7 +26,7 @@ function Root() {
             </h1>
             <p className="text-center text-sm text-neutral-500">
               <b>
-                <span className="dark:text-primary-500">Cosden</span> Solutions
+                <span className="dark:text-primary-500">Ali Ibrahim</span>
               </b>
             </p>
           </header>

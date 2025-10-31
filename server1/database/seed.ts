@@ -1,4 +1,4 @@
-import { LocationData } from "@advanced-react/shared/schema/experience";
+import { LocationData } from "../../shared/schema/experience";
 import { faker } from "@faker-js/faker";
 
 import { auth } from "../features/auth";
@@ -22,10 +22,10 @@ async function seed() {
   const [demoUser] = await db
     .insert(usersTable)
     .values({
-      name: "Ali Ibrahim",
-      bio: "Frontend Developer",
-      email: "demo@ali_ibrahim.com",
-      password: await auth.hashPassword("ali_ibrahim"),
+      name: "Cosden Solutions",
+      bio: "Cosden Solutions is a company that teaches people how to code in React.",
+      email: "demo@cosdensolutions.io",
+      password: await auth.hashPassword("cosdensolutions"),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     })

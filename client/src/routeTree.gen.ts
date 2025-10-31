@@ -65,12 +65,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/experiences/$experienceId': typeof ExperiencesExperienceIdIndexRoute
+  '/experiences/$experienceId/': typeof ExperiencesExperienceIdIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: never
   fullPaths: '/' | '/experiences/$experienceId'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/experiences/$experienceId'
@@ -85,7 +84,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ExperiencesExperienceIdIndexRoute: typeof ExperiencesExperienceIdIndexRoute,
+  ExperiencesExperienceIdIndexRoute: ExperiencesExperienceIdIndexRoute,
 }
 
 export const routeTree = rootRoute
