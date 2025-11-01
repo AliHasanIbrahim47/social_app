@@ -6,6 +6,8 @@ import Card from "@/features/shared/components/ui/Card";
 import Link from "@/features/shared/components/ui/Link";
 
 import { ExperienceForList } from "../types";
+import { ExperienceDeleteDialog } from "./ExperienceDeleteDialog";
+
 import { UserAvatar } from "@/features/users/components/UserAvatar";
 
 type ExperienceCardProps = {
@@ -160,6 +162,7 @@ function ExperienceCardOwnerButtons({
           Edit
         </Link>
       </Button>
+      <ExperienceDeleteDialog experience={experience} />
     </div>
   );
 }
