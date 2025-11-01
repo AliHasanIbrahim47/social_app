@@ -5,6 +5,7 @@ import { trpc } from "@/router";
 import { CommentCreateForm } from "./CommentCreateForm";
 import CommentList from "./CommentList";
 import { ErrorComponent } from "@/features/shared/components/ErrorComponent";
+import Card from "@/features/shared/components/ui/Card";
 
 type CommentsSectionProps = {
   experienceId: Experience["id"];
@@ -30,7 +31,9 @@ export function CommentsSection({
     <div className="space-y-4">
       <h3 className="font-semibold">Comments ({commentsCount})</h3>
 
-      <CommentCreateForm experienceId={experienceId} />
+      <Card>
+        <CommentCreateForm experienceId={experienceId} />
+      </Card>
 
       <CommentList
         comments={commentsQuery.data ?? []}
