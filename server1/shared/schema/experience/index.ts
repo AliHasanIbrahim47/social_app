@@ -10,13 +10,24 @@ const locationSchema = z.object({
 export type LocationData = z.infer<typeof locationSchema>;
 
 export const experienceValidationSchema = zfd.formData({
-  id: zfd.numeric(z.number()).optional(),
-  title: zfd.text(z.string().min(1, "Title is required")),
-  content: zfd.text(z.string().min(1, "Content is required")),
-  scheduledAt: zfd.text(z.string().datetime("Invalid date")),
-  url: zfd.text(z.string().url("Invalid link")).nullable(),
+  id: zfd.numeric().optional(),
+  title: zfd.text().refine(val => val.length >= 1, {
+    message: "Title is required",
+  }),
+  content: zfd.text().refine(val => val.length >= 1, {
+    message: "Content is required",
+  }),
+  scheduledAt: zfd.text().refine(val => !isNaN(Date.parse(val)), {
+    message: "Invalid date",
+  }),
+  url: zfd
+    .text()
+    .refine(val => val === "" || z.string().url().safeParse(val).success, {
+      message: "Invalid link",
+    })
+    .transform(val => (val === "" ? null : val)),
   image: zfd.file().optional(),
-  location: zfd.json(locationSchema),
+  location: zfd.text().optional(),
 });
 
 export const experienceFiltersSchema = z.object({
