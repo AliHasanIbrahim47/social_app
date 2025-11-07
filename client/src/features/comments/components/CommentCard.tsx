@@ -65,21 +65,72 @@ function CommentCardButtons({ comment, setIsEditing }: CommentCardButtonsProps) 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const deleteMutation = trpc.comments.delete.useMutation({
-    onSuccess: async () => {
-      await Promise.all([
-        utils.comments.byExperienceId.invalidate({
-          experienceId: comment.experienceId,
-        }),
-        utils.experiences.feed.invalidate(),
-      ]);
-
+    onMutate: async ({ id }) => {
       setIsDeleteDialogOpen(false);
 
-      toast({
+      await Promise.all([
+        utils.comments.byExperienceId.cancel({
+          experienceId: comment.experienceId,
+        }),
+       utils.experiences.byId.cancel({
+          id: comment.experienceId,
+        }),
+      ]);
+
+      const previousData = {
+        byExperienceId: utils.comments.byExperienceId.getData({
+          experienceId: comment.experienceId,
+        }),
+        experienceById: utils.experiences.byId.getData({
+          id: comment.experienceId,
+        }),
+      };
+
+      utils.comments.byExperienceId.setData(
+        { experienceId: comment.experienceId },
+        (oldData) => {
+          if (!oldData) {
+            return;
+          }
+
+          return oldData.filter((c) => c.id !== id);
+        },
+      );
+
+      utils.experiences.byId.setData(
+        { id: comment.experienceId },
+        (oldData) => {
+          if (!oldData) {
+            return;
+          }
+
+          return {
+            ...oldData,
+            commentsCount: Math.max(0, oldData.commentsCount - 1),
+          };
+        },
+      );
+
+      const { dismiss } = toast({
+        description: "Your comment has been deleted",
         title: "Comment deleted successfully",
       });
+
+      return { dismiss, previousData };
     },
-    onError: (error) => {
+    onError: (error, _, context) => {
+      context?.dismiss?.();
+
+      utils.comments.byExperienceId.setData(
+        { experienceId: comment.experienceId },
+        context?.previousData.byExperienceId,
+      );
+
+      utils.experiences.byId.setData(
+        { id: comment.experienceId },
+        context?.previousData.experienceById,
+      );
+
       toast({
         title: "Failed to delete comment",
         description: error.message,
