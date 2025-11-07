@@ -9,6 +9,12 @@ type UserWithHostedExperiences = User & {
   hostedExperiencesCount: number;
 };
 
-export type UserForDetails = UserWithFollowCounts & UserWithHostedExperiences;
+export type UserWithUserContext = User & {
+  isFollowing: boolean;
+};
 
-export type UserForList = User;
+export type UserForList = User & UserWithUserContext;
+
+export type UserForDetails = UserWithFollowCounts &
+  UserWithHostedExperiences &
+  UserWithUserContext;
