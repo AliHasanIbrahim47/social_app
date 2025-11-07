@@ -5,3 +5,5 @@ type UserWithHostedExperiences = User & {
 };
 
 export type UserForDetails = UserWithHostedExperiences;
+
+export type UserForList = User;
